@@ -2,24 +2,28 @@ const express =  require('express');
 const port = 3000
 const app = express();
 
+const {adminAuth, userAuth} = require("./middlewares/auth")
 // Get /users => middlerware chain => request handler 
 
-app.use("/", (req, res, next)=>{
-  // res.send("handling / route")
-  console.log(" hnading /user route & I m just middleware");
-  next();
+app.use("/admin", adminAuth);
+
+// app.use("/user", userAuth);
+
+app.post("/login", (req, res)=>{
+  res.send("login sucessfully")
+})
+app.get("/user", userAuth, (req, res)=>{
+  res.send("user data")
 });
 
-app.get("/user", (req, res, next)=>{
-  console.log(" hnading /user route & I m just middleware");
-  next();
-},
-(req, res, next)=>{
-  console.log(" hnading /user route2");
-  res.send("I am request(response) handler because I am sending response back to the client")
-})
 
+app.get("/admin/getAllData", (req, res,  next)=>{
+  res.send("all data is send")
+});
 
+app.delete("/admin/deleteUser", (req, res, next)=>{
+  res.send("user is getting deleted")
+});
 
 app.listen(port, ()=>{
   console.log(`server is listening on port ${port}`)
