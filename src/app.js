@@ -2,29 +2,29 @@ const express =  require('express');
 const port = 3000
 const app = express();
 
-// this will only handle get cal to /user
+// multiple route hanlders
 
-// order matters
-app.use("/user", (req, res)=>{
-  res.send("HAAAAAAAAAAAAAA")
-})
-app.get("/user", (req, res)=>{
-  res.send({name:"Radha", age:23})
-})
+app.use("/user", [(req, res, next)=>{
+  // route handler
+  console.log("handleing route of the handler function")
+    next();
+  // res.send("Router Handler 1")
+  // by default it not going to the second router hanlder function we need next function
 
-app.post("/user", (req, res)=>{
-  // saving data to the DB
-  res.send("Data is saved")
-})
 
-app.delete("/user", (req, res)=>{
-  res.send("deleted!")
-})
+}, (req, res, next)=>{
 
-// this will match all http method API call to /test
-app.use("/test", (req, res)=>{
-  res.send("Hello from the test!")
-});
+  console.log("handling second route of the hanlder function");
+next()
+  // res.send("2nd router hanlder!")
+},
+ (req, res, next)=>{
+
+  console.log("handling second route of the hanlder function");
+
+  res.send("5nd router hanlder!")
+}]);
+
 
 
 
