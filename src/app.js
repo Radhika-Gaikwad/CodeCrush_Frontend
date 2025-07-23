@@ -81,6 +81,59 @@ console.log(user)
   
 })
 
+// find user by id
+app.get("/findUser/:id", async(req, res, next)=>{
+  const userId = req.params.id
+
+
+  try{
+    const user = await User.findById(userId)
+    if(!user)
+    {
+      res.status(404).send("Not Found")
+    }else{
+      res.send(user);
+    }
+
+  }catch(err)
+  {
+    res.status(400).send("Something went wrong")
+  }
+})
+
+// Delete User
+
+app.delete("/deleteUser", async(req, res, next)=>{
+  const userId = req.body.userId
+
+  try{
+    const user = await User.findByIdAndDelete(userId);
+    
+    res.send("User Deleted Sucessfully!")
+  }
+  catch(err)
+  {
+    res.status(400).send("Something went wrong");
+  }
+
+})
+
+// Update the user data
+
+app.patch("/update", async(req, res, next)=>{
+  const data = req.body
+const userId = req.body._id
+  try{
+   const user = await User.findByIdAndUpdate(userId, data, {returnDocument:"before"});
+
+   console.log(user)
+
+   res.send("User updated sucessfully")
+  }catch(err)
+  {
+    res.status(400).send("Something went wrong")
+  }
+})
 connectDB()
 .then(()=>{
   console.log("Database connction is established")
