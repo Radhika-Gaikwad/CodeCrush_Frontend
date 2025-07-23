@@ -2,28 +2,30 @@ const express =  require('express');
 const port = 3000
 const app = express();
 
-const {adminAuth, userAuth} = require("./middlewares/auth")
-// Get /users => middlerware chain => request handler 
 
-app.use("/admin", adminAuth);
+// app.get("/getUserData",  (req, res)=>{
+//   throw new Error("abcdefg");
+//   res.send("User Data sent")
+// });
 
-// app.use("/user", userAuth);
+app.get("/getUserData",  (req, res)=>{
+try{
+  throw new Error("abcdefg");
+//   res.send("User Data sent")
+}catch(err)
+{
+ res.status(500).send("Some error is occured contact support team")
+}
+});
 
-app.post("/login", (req, res)=>{
-  res.send("login sucessfully")
+app.use("/", (err, req, res, next)=>{
+  if(err)
+  {
+    res.status(500).send("something went wrong")
+  }
 })
-app.get("/user", userAuth, (req, res)=>{
-  res.send("user data")
-});
 
 
-app.get("/admin/getAllData", (req, res,  next)=>{
-  res.send("all data is send")
-});
-
-app.delete("/admin/deleteUser", (req, res, next)=>{
-  res.send("user is getting deleted")
-});
 
 app.listen(port, ()=>{
   console.log(`server is listening on port ${port}`)
