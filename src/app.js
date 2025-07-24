@@ -124,14 +124,16 @@ app.patch("/update", async(req, res, next)=>{
   const data = req.body
 const userId = req.body._id
   try{
-   const user = await User.findByIdAndUpdate(userId, data, {returnDocument:"before"});
+   const user = await User.findByIdAndUpdate(userId, data, {returnDocument:"before",
+    runValidators: true
+   });
 
    console.log(user)
 
    res.send("User updated sucessfully")
   }catch(err)
   {
-    res.status(400).send("Something went wrong")
+    res.status(400).send("Something went wrong"+ err.message)
   }
 })
 connectDB()
