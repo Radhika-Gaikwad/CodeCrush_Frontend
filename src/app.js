@@ -3,21 +3,33 @@ const port = 3000
 const {connectDB} = require("./config/database")
 const app = express();
 const User = require("./models/user")
-
-app.use(express.json())
+const bcrypt = require("bcrypt")
+app.use(express.json());
+const {validateSignUpData} = require("./utils/validation")
 app.post("/signup", async(req, res, next)=>{
- console.log(req.body)
+   try{
+//  console.log(req.body)
+// Validation of the data 
+validateSignUpData(req)
 
- const user = new User(req.body);
+const {firstName, lastName, password, emailId} = req.body
+// Encrypt the passoword
+const passwordHash = await bcrypt.hash(password, 10);
+console.log(passwordHash)
 
- try{
+// creating then new instance of the User
+ const user = new User({
+  firstName, lastName, password: passwordHash, emailId, 
+ });
+
+
 
   await user.save();
   res.send("User Addes Sucessfully")
 
  }catch(err)
  {
- res.status(400).send("Error is occuring"+ err.message) }
+ res.status(400).send("Error : "+ err.message) }
 
 });
 
