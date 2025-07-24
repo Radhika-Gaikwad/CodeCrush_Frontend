@@ -5,7 +5,9 @@ const app = express();
 const User = require("./models/user")
 const bcrypt = require("bcrypt")
 app.use(express.json());
-const {validateSignUpData} = require("./utils/validation")
+const {validateSignUpData, validateLoginData} = require("./utils/validation")
+
+
 app.post("/signup", async(req, res, next)=>{
    try{
 //  console.log(req.body)
@@ -32,6 +34,37 @@ console.log(passwordHash)
  res.status(400).send("Error : "+ err.message) }
 
 });
+
+
+// login api 
+app.post("/login", async(req, res, next)=>{
+   try{
+
+    const {emailId, password} = req.body;
+validateLoginData(req);
+const user = await User.findOne({emailId: emailId});
+if(!user)
+{
+  throw new Error("Invalid Credentials")
+}
+const isValidPassword = await bcrypt.compare(password, user.password)
+
+if(isValidPassword)
+{
+  res.send("Login Successfully!")
+}else{
+  throw new Error("Invalid Credentials")
+}
+
+
+
+
+
+   }catch(err)
+   {
+    res.status(400).send("Error: "+ err.message)
+   }
+})
 
 // Feed APi get all the users api from the const first = useRef(second)
 
@@ -165,6 +198,8 @@ if(data?.skills?.length>10)
     res.status(400).send("Something went wrong"+ err.message)
   }
 })
+
+
 connectDB()
 .then(()=>{
   console.log("Database connction is established")
